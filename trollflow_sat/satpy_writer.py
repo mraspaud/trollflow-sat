@@ -157,7 +157,8 @@ class DataWriter(Thread):
                             self._process(data, **kwargs)
                     except Exception:
                         self.logger.exception("Something went wrong when writing.")
-
+                    finally:
+                        del data
                     # After all the items have been processed, release the
                     # lock for the previous worker
 
@@ -222,7 +223,7 @@ class DataWriter(Thread):
             fmts = utils.get_format_settings(product_config, prod,
                                              scn_metadata["area_id"])
 
-            # Read writer specific kwargs 
+            # Read writer specific kwargs
             writer_kwargs = utils.read_writer_config(product_config, products[prod], prod, scn_metadata)
             kwargs.update(writer_kwargs)
 
