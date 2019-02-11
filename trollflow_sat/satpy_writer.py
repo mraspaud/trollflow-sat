@@ -6,6 +6,7 @@ import time
 from threading import Thread
 from satpy.writers import compute_writer_results
 from dask import threaded
+import gc
 
 from posttroll.message import Message
 from posttroll.publisher import Publish
@@ -159,8 +160,13 @@ class DataWriter(Thread):
                     except Exception:
                         self.logger.exception("Something went wrong when writing.")
                     finally:
-                        threaded.default_pool.close()
-                        threaded.default_pool = None
+                        if data is None:
+                            try:
+                                threaded.default_pool.close()
+                            except AttributeError:
+                                pass
+                            num = gc.collect()
+                            self.logger.debug("Garbage collection cleaned %s objects", num)
                         del data
                     # After all the items have been processed, release the
                     # lock for the previous worker
