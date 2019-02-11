@@ -5,6 +5,7 @@ from six.moves.queue import Empty as queue_empty
 import time
 from threading import Thread
 from satpy.writers import compute_writer_results
+from dask import threaded
 
 from posttroll.message import Message
 from posttroll.publisher import Publish
@@ -158,6 +159,8 @@ class DataWriter(Thread):
                     except Exception:
                         self.logger.exception("Something went wrong when writing.")
                     finally:
+                        threaded.default_pool.close()
+                        threaded.default_pool = None
                         del data
                     # After all the items have been processed, release the
                     # lock for the previous worker
