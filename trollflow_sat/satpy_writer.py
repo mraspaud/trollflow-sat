@@ -168,8 +168,9 @@ class DataWriter(Thread):
                                 pass
                             num = gc.collect()
                             self.logger.debug("Garbage collection cleaned %s objects", num)
+                            self.logger.debug("Exiting thread, done.")
+                            break
                         del data
-                        break
                     # After all the items have been processed, release the
                     # lock for the previous worker
 
