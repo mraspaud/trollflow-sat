@@ -163,11 +163,13 @@ class DataWriter(Thread):
                         if data is None:
                             try:
                                 threaded.default_pool.close()
+                                threaded.default_pool = None
                             except AttributeError:
                                 pass
                             num = gc.collect()
                             self.logger.debug("Garbage collection cleaned %s objects", num)
                         del data
+                        break
                     # After all the items have been processed, release the
                     # lock for the previous worker
 
