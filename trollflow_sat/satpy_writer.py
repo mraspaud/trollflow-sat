@@ -169,6 +169,7 @@ class DataWriter(Thread):
                             num = gc.collect()
                             self.logger.debug("Garbage collection cleaned %s objects", num)
                             self.logger.debug("Exiting thread, done.")
+                            time.sleep(1)
                             break
                         del data
                     # After all the items have been processed, release the
